@@ -1,5 +1,7 @@
 
-import login from './login'
+import login from './login';
+import products from './products';
+
 import Vue from 'vue'
 import Vuex from 'vuex'
 
@@ -14,6 +16,7 @@ export default new Vuex.Store({
   actions: {
   },
   modules: {
-    login
+    login,
+    products
   }
 })

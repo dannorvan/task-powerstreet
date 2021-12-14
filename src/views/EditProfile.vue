@@ -5,7 +5,10 @@
         @register-user="editUser"
     />
 
-    <snackbar @close-snack="snackbar = false" :snackbar="snackbar" :text-snack="textSnack"/>
+    <snackbar
+        @close-snack="snackbar = false"
+        :snackbar="snackbar"
+        :text-snack="textSnack"/>
   </div>
 </template>
 
@@ -34,10 +37,13 @@ export default {
       this.snackbar = true;
       this.textSnack = `Ahora puedes iniciar sesión`;
 
-      // const editUser = {
-      //   ...user,
-      //   fecha
-      // }
+      const editUser = {
+        ...user,
+        fecha
+      }
+
+      //TODO. peticion editar
+      console.log(editUser);
       //
       // if(!this.fieldValid(user)) return;
       //

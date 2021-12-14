@@ -9,7 +9,7 @@
 
 <script>
 
-import Appbar from "@/components/ui/Appbar";
+import Appbar from "@/components/ui/appbar/Appbar";
 
 export default {
   name: 'App',

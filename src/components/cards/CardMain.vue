@@ -5,7 +5,7 @@
   >
     <template slot="progress">
       <v-progress-linear
-          color="deep-purple"
+          color="grey"
           height="10"
           indeterminate
       ></v-progress-linear>
@@ -14,18 +14,18 @@
     <v-img
         height="250"
         :aspect-ratio="16/9"
-        src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
+        :src="img"
     ></v-img>
 
-    <v-card-title>Cafe Badilico</v-card-title>
+    <v-card-title class="pb-1">{{nameProduct}}</v-card-title>
 
     <v-card-text>
 
-      <div class="my-4 text-subtitle-1">
-        $ • Italian, Cafe
+      <div class="my-1 text-subtitle-1">
+        ${{price.toFixed(2)}}
       </div>
 
-      <div>Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.</div>
+      <div class="header-class">{{description}}</div>
     </v-card-text>
 
     <v-divider class="mx-4"></v-divider>
@@ -43,11 +43,39 @@
 </template>
 
 <script>
+
 export default {
-  name: "CardMain"
+  name: "CardMain",
+
+  props: {
+    img: {
+      type: String,
+      default: 'https://cdn.vuetifyjs.com/images/cards/cooking.png'
+    },
+    nameProduct: {
+      type: String,
+      default: 'Nombre Producto'
+    },
+    price: {
+      type: Number,
+      default: 999
+    },
+    description: {
+      type: String,
+      default: 'Descripción'
+    },
+
+  },
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+
+.header-class{
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 
 </style>

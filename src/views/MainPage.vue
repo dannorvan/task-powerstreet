@@ -62,25 +62,54 @@
           {{ filterProduct }}
         </v-chip>
       </v-row>
+
+      <v-row>
+        <v-col
+            cols="12" sm="6" md="4" lg="4"
+            v-for="{codigo_producto, imagen, nombre_producto, precio, descripcion} in listProducts"
+        >
+          <CardMain
+              :key="codigo_producto"
+              :name-product="nombre_producto"
+              :price="precio"
+              :description="descripcion"
+          />
+        </v-col>
+      </v-row>
+
     </v-container>
 
 
-    <v-container>
-      <CardMain />
-    </v-container>
+    <div class="text-center">
+      <v-row justify="center">
+        <v-col cols="3">
+          <v-pagination
+              v-model="page"
+              :length="paginationNumber"
+              color="black"
+              @input="getProductsVx"
+          ></v-pagination>
+        </v-col>
+      </v-row>
+    </div>
 
+
+    <snackbar @close-snack="snackbar = false" :snackbar="snackbar" :text-snack="textSnack"/>
   </div>
-
 </template>
 
 <script>
 import CardMain from "@/components/cards/CardMain";
+import {mapMutations, mapState, mapActions} from "vuex";
+import {loaderLoading, URL_BACK_API} from "@/helpers";
+import snackbar from "@/components/ui/snackbar";
 
 export default {
   name: "MainPage",
 
   components: {
     CardMain,
+    snackbar
   },
 
   data() {
@@ -88,11 +117,29 @@ export default {
       isSearching: false,
       filterProduct: '',
       showChipProduct: false,
-      listProductsFilters: []
+      listProductsFilters: [],
+      listProducts: [],
+      page: 1,
+      limit: 4,
+      prevPage: [],
+      paginationNumber: 6,
+      snackbar: false,
+      textSnack: ''
     }
   },
 
+  computed: {
+    ...mapState('products', ['productList']),
+  },
+
+  async mounted() {
+    await this.getProductsVx();
+    this.listProducts = this.productList;
+    console.log(this.listProducts);
+  },
+
   methods: {
+    ...mapActions('products', ['getProducts']),
 
     cleanSearching() {
       this.isSearching= !this.isSearching;
@@ -102,9 +149,27 @@ export default {
 
     searchProducts() {
     this.showChipProduct = !this.showChipProduct;
+    },
+
+    async getProductsVx(){
+      if(this.prevPage.includes(this.page)) return;
+
+      this.prevPage.push(this.page);
+      try {
+        loaderLoading.show();
+        const resp = await this.getProducts({limit: this.limit, page:this.page});
+        if(resp){
+          this.snackbar = true;
+          this.textSnack = resp;
+        }
+      } catch (e) {
+        console.error(e)
+      } finally {
+        loaderLoading.hide();
+      }
     }
 
-  }
+  },
 }
 </script>
 

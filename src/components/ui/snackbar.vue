@@ -1,19 +1,20 @@
 <template>
-  <v-snackbar
-      v-model="snackbar"
-  >
-    {{textSnack}}
-    <template v-slot:action="{ attrs }">
-      <v-btn
-          color="pink"
-          text
-          v-bind="attrs"
-          @click="$emit('close-snack')"
-      >
-        Close
-      </v-btn>
-    </template>
-  </v-snackbar>
+    <v-snackbar
+        v-model="snackbar"
+        :timeout="-1"
+    >
+      {{textSnack}}
+      <template v-slot:action="{ attrs }">
+        <v-btn
+            color="pink"
+            text
+            v-bind="attrs"
+            @click="$emit('close-snack')"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
 </template>
 
 <script>
@@ -37,5 +38,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

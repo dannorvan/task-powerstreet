@@ -28,11 +28,21 @@ const routes = [
     component: () => import(/* webpackChunkName: "saved-products" */ '../views/SavedProducts')
   },
   {
-    path: '/edit-user',
-    name: 'EditUser',
+    path: '/edit-users',
+    name: 'EditUsers',
 
-    component: () => import(/* webpackChunkName: "saved-products" */ '../views/EditUser')
+    component: () => import(/* webpackChunkName: "edit-users" */ '../views/EditUsers')
   },
+  {
+    path: '/edit-profile',
+    name: 'EditProfile',
+
+    component: () => import(/* webpackChunkName: "edit-profile" */ '../views/EditProfile')
+  },
+  {
+    path: '*',
+    redirect: '/'
+  }
 ]
 
 const router = new VueRouter({

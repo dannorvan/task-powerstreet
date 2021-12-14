@@ -27,6 +27,12 @@ export default{
             state.productsSearched = [];
         },
 
+        resetValues(state){
+            state.productsSearched = [];
+            state.productList = [];
+            state.productsInCar = [];
+        },
+
         addProductsCar(state,product){
             state.productsInCar.push(product);
             console.log(state.productsInCar);

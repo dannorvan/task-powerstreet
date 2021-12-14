@@ -199,6 +199,10 @@ export default {
       textSnack: ''
     }
   },
+  beforeRouteLeave(to,from,next){
+    this.resetValues();
+    next();
+  },
 
   computed: {
     ...mapState('products', ['productList', 'productsSearched', 'productsInCar']),
@@ -212,7 +216,7 @@ export default {
 
   methods: {
     ...mapActions('products', ['getProducts', 'findProduct']),
-    ...mapMutations('products', ['cleanProductSearched', 'addProductsCar']),
+    ...mapMutations('products', ['cleanProductSearched', 'addProductsCar', 'resetValues']),
 
     cleanSearching() {
       this.cleanProductSearched();

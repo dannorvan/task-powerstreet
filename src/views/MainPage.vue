@@ -63,7 +63,7 @@
         </v-chip>
       </v-row>
 
-      <v-row>
+      <v-row v-if="!productsSearched.length">
         <v-col
             cols="12" sm="6" md="4" lg="4"
             v-for="{codigo_producto, imagen, nombre_producto, precio, descripcion} in listProducts"
@@ -77,10 +77,26 @@
         </v-col>
       </v-row>
 
+
+      <v-row v-else>
+        <v-col
+            cols="12" sm="6" md="4" lg="4"
+            v-for="{codigo_producto, imagen, nombre_producto, precio, descripcion} in productsSearched"
+        >
+          <CardMain
+              :key="codigo_producto"
+              :name-product="nombre_producto"
+              :price="precio"
+              :description="descripcion"
+          />
+        </v-col>
+      </v-row>
+
+
     </v-container>
 
 
-    <div class="text-center">
+    <div v-if="!productsSearched.length" class="text-center">
       <v-row justify="center">
         <v-col cols="3">
           <v-pagination
@@ -129,7 +145,7 @@ export default {
   },
 
   computed: {
-    ...mapState('products', ['productList']),
+    ...mapState('products', ['productList', 'productsSearched']),
   },
 
   async mounted() {
@@ -139,16 +155,34 @@ export default {
   },
 
   methods: {
-    ...mapActions('products', ['getProducts']),
+    ...mapActions('products', ['getProducts', 'findProduct']),
+    ...mapMutations('products', ['cleanProductSearched']),
 
     cleanSearching() {
+      this.cleanProductSearched();
       this.isSearching= !this.isSearching;
       this.filterProduct = '';
       this.showChipProduct = false;
     },
 
-    searchProducts() {
-    this.showChipProduct = !this.showChipProduct;
+    async searchProducts() {
+
+      try {
+        loaderLoading.show();
+        const resp = await this.findProduct(this.filterProduct);
+        this.showChipProduct = !this.showChipProduct;
+        if(resp){
+          this.snackbar = true;
+          this.textSnack = resp;
+          this.showChipProduct = false;
+          this.filterProduct = '';
+        }
+      } catch (e) {
+        console.e(e);
+      } finally {
+        loaderLoading.hide();
+      }
+
     },
 
     async getProductsVx(){

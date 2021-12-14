@@ -8,13 +8,22 @@ export default{
     namespaced: true,
 
     state: {
-        productList: []
+        productList: [],
+        productsSearched: []
     },
 
     mutations: {
         updateListProduct(state, products){
             state.productList.push(...products);
             // Vue.set(state.productList, state.productList.length ,...products);
+        },
+
+        updateProductSearched(state, products){
+            state.productsSearched.push(...products);
+        },
+
+        cleanProductSearched(state){
+            state.productsSearched = [];
         }
     },
 
@@ -41,10 +50,32 @@ export default{
                     commit('updateListProduct', datos);
                 }
             })
+        },
 
+        async findProduct({commit}, product){
 
+            const body = {
+                "busqueda": product,
+                "limite": 100,
+                "pagina": 1,
+            };
 
-
+            return await fetch(`${URL_BACK_API}/productos`, {
+                method: `POST`,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({...body}),
+            }).then(async data => {
+                const { datos , error } = await data.json();
+                console.log(datos, error);
+                if(error){
+                    return error;
+                }
+                else{
+                    commit('updateProductSearched', datos);
+                }
+            })
         }
     }
 }

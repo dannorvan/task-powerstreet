@@ -9,7 +9,8 @@ export default{
 
     state: {
         productList: [],
-        productsSearched: []
+        productsSearched: [],
+        productsInCar: []
     },
 
     mutations: {
@@ -24,6 +25,11 @@ export default{
 
         cleanProductSearched(state){
             state.productsSearched = [];
+        },
+
+        addProductsCar(state,product){
+            state.productsInCar.push(product);
+            console.log(state.productsInCar);
         }
     },
 

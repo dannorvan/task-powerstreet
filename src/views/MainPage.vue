@@ -26,6 +26,7 @@
               placeholder="Camisa, Vestido..."
               class="mr-3"
               color="grey darken-3"
+              @input="searchProductsCurrent"
           >
           </v-text-field>
           <v-icon
@@ -41,9 +42,11 @@
               color="grey darken-2"
               outlined
               small
-              :disabled="filterProduct.trim().length < 3"
+              :disabled="filterProduct.trim().length < 1"
+              :class="['animate__animated', 'animate__infinite' , 'animate__slow',
+                !this.listProductsFilters.length && 'animate__pulse']"
           >
-            buscar
+            buscar en catálogo
           </v-btn>
         </v-col>
       </v-row>
@@ -63,35 +66,67 @@
         </v-chip>
       </v-row>
 
-      <v-row v-if="!productsSearched.length">
-        <v-col
-            cols="12" sm="6" md="4" lg="4"
-            v-for="{codigo_producto, imagen, nombre_producto, precio, descripcion} in listProducts"
+      <template v-if="!this.listProductsCurrent.length && !showFilter">
+        <v-row v-if="!productsSearched.length">
+          <v-col
+              cols="12" sm="6" md="4" lg="4"
+              v-for="product in listProducts"
+          >
+            <CardMain
+                :key="product.codigo_producto"
+                :name-product="product.nombre_producto"
+                :price="product.precio"
+                :description="product.descripcion"
+                @add-to-car="addProductsCarVx(product)"
+            />
+          </v-col>
+        </v-row>
+
+
+        <v-row v-else>
+          <v-col
+              cols="12" sm="6" md="4" lg="4"
+              v-for="product in productsSearched"
+          >
+            <CardMain
+                :key="product.codigo_producto"
+                :name-product="product.nombre_producto"
+                :price="product.precio"
+                :description="product.descripcion"
+                @add-to-car="addProductsCar(product)"
+            />
+          </v-col>
+        </v-row>
+      </template>
+
+      <template v-else>
+        <v-row v-if="this.listProductsCurrent.length">
+          <v-col
+              cols="12" sm="6" md="4" lg="4"
+              v-for="product in listProductsCurrent"
+          >
+            <CardMain
+                :key="product.codigo_producto"
+                :name-product="product.nombre_producto"
+                :price="product.precio"
+                :description="product.descripcion"
+                @add-to-car="addProductsCar(product)"
+            />
+          </v-col>
+        </v-row>
+
+        <v-alert
+            v-else
+            class="ma-10 animate__animated animate__fadeIn"
+            shaped
+            prominent
+            type="error"
+            color="red darken-4"
+
         >
-          <CardMain
-              :key="codigo_producto"
-              :name-product="nombre_producto"
-              :price="precio"
-              :description="descripcion"
-          />
-        </v-col>
-      </v-row>
-
-
-      <v-row v-else>
-        <v-col
-            cols="12" sm="6" md="4" lg="4"
-            v-for="{codigo_producto, imagen, nombre_producto, precio, descripcion} in productsSearched"
-        >
-          <CardMain
-              :key="codigo_producto"
-              :name-product="nombre_producto"
-              :price="precio"
-              :description="descripcion"
-          />
-        </v-col>
-      </v-row>
-
+          No hay coincidencias con tu busqueda, intenta realizar una busqueda profunda.
+        </v-alert>
+      </template>
 
     </v-container>
 
@@ -110,6 +145,19 @@
     </div>
 
 
+<!--    <v-btn-->
+<!--        v-if="productsInCar"-->
+<!--        class="mx-2"-->
+<!--        fab-->
+<!--        dark-->
+<!--        color="indigo"-->
+<!--    >-->
+<!--      <v-icon dark>-->
+<!--        mdi-plus-->
+<!--      </v-icon>-->
+<!--    </v-btn>-->
+
+
     <snackbar @close-snack="snackbar = false" :snackbar="snackbar" :text-snack="textSnack"/>
   </div>
 </template>
@@ -119,6 +167,7 @@ import CardMain from "@/components/cards/CardMain";
 import {mapMutations, mapState, mapActions} from "vuex";
 import {loaderLoading, URL_BACK_API} from "@/helpers";
 import snackbar from "@/components/ui/snackbar";
+import 'animate.css';
 
 export default {
   name: "MainPage",
@@ -132,8 +181,10 @@ export default {
     return {
       isSearching: false,
       filterProduct: '',
+      showFilter: false,
       showChipProduct: false,
       listProductsFilters: [],
+      listProductsCurrent: [],
       listProducts: [],
       page: 1,
       limit: 4,
@@ -145,7 +196,7 @@ export default {
   },
 
   computed: {
-    ...mapState('products', ['productList', 'productsSearched']),
+    ...mapState('products', ['productList', 'productsSearched', 'productsInCar']),
   },
 
   async mounted() {
@@ -156,22 +207,23 @@ export default {
 
   methods: {
     ...mapActions('products', ['getProducts', 'findProduct']),
-    ...mapMutations('products', ['cleanProductSearched']),
+    ...mapMutations('products', ['cleanProductSearched', 'addProductsCar']),
 
     cleanSearching() {
       this.cleanProductSearched();
-      this.isSearching= !this.isSearching;
+      this.isSearching = !this.isSearching;
       this.filterProduct = '';
       this.showChipProduct = false;
+      this.showFilter = false;
     },
 
     async searchProducts() {
-
+      this.showFilter = false;
       try {
         loaderLoading.show();
         const resp = await this.findProduct(this.filterProduct);
         this.showChipProduct = !this.showChipProduct;
-        if(resp){
+        if (resp) {
           this.snackbar = true;
           this.textSnack = resp;
           this.showChipProduct = false;
@@ -185,14 +237,20 @@ export default {
 
     },
 
-    async getProductsVx(){
-      if(this.prevPage.includes(this.page)) return;
+    searchProductsCurrent() {
+      this.showFilter = true;
+      this.listProductsCurrent = this.listProducts
+          .filter(prod => prod.nombre_producto.includes(this.filterProduct));
+    },
+
+    async getProductsVx() {
+      if (this.prevPage.includes(this.page)) return;
 
       this.prevPage.push(this.page);
       try {
         loaderLoading.show();
-        const resp = await this.getProducts({limit: this.limit, page:this.page});
-        if(resp){
+        const resp = await this.getProducts({limit: this.limit, page: this.page});
+        if (resp) {
           this.snackbar = true;
           this.textSnack = resp;
         }
@@ -201,6 +259,12 @@ export default {
       } finally {
         loaderLoading.hide();
       }
+    },
+
+    addProductsCarVx(product) {
+      this.addProductsCar(product);
+      this.snackbar = true;
+      this.textSnack = `Excelente, has agregado ${product.nombre_producto} al carrito`;
     }
 
   },
@@ -208,8 +272,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.main-page{
-  .title{
+.main-page {
+  .title {
     background-color: black;
     display: flex;
     flex-direction: column;
@@ -220,12 +284,13 @@ export default {
     width: 90%;
     margin: 0 auto;
 
-    h3, p{
+    h3, p {
       margin: 0;
       letter-spacing: 4px;
       font-weight: bold;
     }
-    p{
+
+    p {
       font-weight: normal;
     }
   }

@@ -82,6 +82,8 @@ export default {
           this.snackbar = true;
           this.textSnack = data.error;
         } else {
+          //TODO estoooooo
+          localStorage.setItem('user', {...this.user});
           this.login(this.user);
           this.$router.push({name: 'MainPage'});
         }

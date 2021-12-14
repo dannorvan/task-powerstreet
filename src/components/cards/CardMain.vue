@@ -35,6 +35,7 @@
             class="ma-2"
             color="black"
             outlined
+            @click="$emit('add-to-car')"
         >
           Agregar
         </v-btn>

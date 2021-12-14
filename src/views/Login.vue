@@ -26,21 +26,7 @@
       ¿Ya tienes cuenta? ingresa  <b> aquí</b>
     </v-btn>
 
-    <v-snackbar
-        v-model="snackbar"
-    >
-      {{textSnack}}
-      <template v-slot:action="{ attrs }">
-        <v-btn
-            color="pink"
-            text
-            v-bind="attrs"
-            @click="snackbar = false"
-        >
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
+    <snackbar @close-snack="snackbar = false" :snackbar="snackbar" :text-snack="textSnack"/>
 
   </div>
 </template>
@@ -50,7 +36,8 @@ import moment from 'moment';
 import {mapMutations, mapState} from 'vuex';
 import LoginForm from "@/components/login/LoginForm";
 import RegisterForm from "@/components/login/RegisterForm";
-import {fetchApiLogin} from "@/helpers/fetch";
+import {loaderLoading, fetchApiLogin} from "@/helpers";
+import Snackbar from "@/components/ui/snackbar";
 
 export default {
   name: "Login",
@@ -69,9 +56,11 @@ export default {
   },
 
   components: {
+    Snackbar,
     LoginForm,
     RegisterForm
   },
+
 
   computed: {
     ...mapState('login', ['isLogged']),
@@ -85,6 +74,7 @@ export default {
 
 
       try {
+        loaderLoading.show()
         this.isLoading = true;
         const resp = await fetchApiLogin('login', this.user);
         const data = await resp.json();
@@ -99,6 +89,7 @@ export default {
         console.error(e);
       } finally {
         this.isLoading = false;
+        loaderLoading.hide();
       }
     },
 
@@ -112,8 +103,8 @@ export default {
       if(!this.fieldValid(user)) return;
 
       try {
+        loaderLoading.show();
         this.isLoading = true;
-
         const resp = await fetchApiLogin('guardar_usuario', newUser);
         const data = await resp.json();
         if(data.error){
@@ -132,6 +123,7 @@ export default {
         console.error(e);
       } finally {
         this.isLoading = false;
+        loaderLoading.hide();
       }
 
     },
@@ -145,21 +137,13 @@ export default {
       }
       return true;
     }
-
-
-
   },
-
-  mounted() {
-    // console.log(this.isLogged)
-  }
 }
 </script>
 
 <style lang="scss" scoped>
 
 .cont-main {
-  //overflow-y: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;

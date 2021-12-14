@@ -145,17 +145,22 @@
     </div>
 
 
-<!--    <v-btn-->
-<!--        v-if="productsInCar"-->
-<!--        class="mx-2"-->
-<!--        fab-->
-<!--        dark-->
-<!--        color="indigo"-->
-<!--    >-->
-<!--      <v-icon dark>-->
-<!--        mdi-plus-->
-<!--      </v-icon>-->
-<!--    </v-btn>-->
+    <v-btn
+        v-if="productsInCar.length"
+        fixed
+        bottom
+        right
+        class="mx-2"
+        fab
+        dark
+        color="teal darken-4"
+    >
+      <v-icon dark>
+        mdi-cart-outline
+      </v-icon>
+      <small>{{productsInCar.length}}</small>
+
+    </v-btn>
 
 
     <snackbar @close-snack="snackbar = false" :snackbar="snackbar" :text-snack="textSnack"/>

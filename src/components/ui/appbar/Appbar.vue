@@ -61,12 +61,17 @@ export default {
     ...mapState('login', ['isLogged', 'user']),
   },
 
+  mounted() {
+    this.getUser();
+  },
+
   methods: {
-    ...mapMutations('login', ['logout']),
+    ...mapMutations('login', ['logout', 'getUser']),
 
     logoutSession(){
       this.logout();
       this.$router.push({path: '/'})
+      localStorage.removeItem('user');
       this.drawer = false;
     },
   },

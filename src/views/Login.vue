@@ -61,7 +61,6 @@ export default {
     RegisterForm
   },
 
-
   computed: {
     ...mapState('login', ['isLogged']),
   },
@@ -82,8 +81,7 @@ export default {
           this.snackbar = true;
           this.textSnack = data.error;
         } else {
-          //TODO estoooooo
-          localStorage.setItem('user', {...this.user});
+          localStorage.setItem('user', JSON.stringify({user: this.user.usuario, isLogged: true}));
           this.login(this.user);
           this.$router.push({name: 'MainPage'});
         }
@@ -153,6 +151,7 @@ export default {
 
   .v-form {
     width: 90%;
+    max-width: 800px;
     margin: 0 auto;
   }
 }

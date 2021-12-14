@@ -13,6 +13,12 @@ export default{
 
     mutations: {
 
+        getUser(state){
+          state.user = JSON.parse(localStorage.getItem('user')) || undefined;
+          if(state.user)
+              state.isLogged = true;
+        },
+
         login(state,payload){
             state.isLogged = true;
             state.user = payload;

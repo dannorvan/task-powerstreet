@@ -19,7 +19,7 @@
         <v-spacer></v-spacer>
 
         <div class="cont-dialog">
-          <DialogUsers :dialog.sync="dialog" />
+          <DialogUsers :dialog.sync="dialog"/>
         </div>
 
         <v-btn icon>
@@ -36,13 +36,10 @@
             :key="user.usuario"
         >
           <v-list-item-content>
-            <v-list-item-title v-text="">{{index+1}}.-{{ user.usuario }}</v-list-item-title>
+            <v-list-item-title v-text="">{{ index + 1 }}.-{{ user.usuario }}</v-list-item-title>
           </v-list-item-content>
-          <v-btn
-              @click="updateCurrentUser(user)"
-              icon>
-            <v-icon>mdi-grease-pencil</v-icon>
-          </v-btn>
+          <DialogUsers @editar-usuario="updateCurrentUser(user)" :dialog.sync="dialog" icon="mdi-grease-pencil"
+                       :edit="true"/>
           <v-btn
               @click="deleteUser({usuario:user.nombre, id:user.usuario})"
               icon>
@@ -52,7 +49,6 @@
       </v-list>
     </v-card>
 
-
   </div>
 </template>
 
@@ -60,6 +56,8 @@
 
 import DialogUsers from "@/components/dialogs/DialogUsers";
 import {mapActions, mapMutations, mapState} from "vuex";
+import moment from "moment";
+import Login from "@/views/Login";
 
 export default {
   name: "EditUser",
@@ -83,8 +81,13 @@ export default {
     ...mapActions('crudUsers', ['getUsers', 'deleteUser']),
     ...mapMutations('crudUsers', ['editUser']),
 
-    updateCurrentUser(user){
-      this.editUser(user)
+    updateCurrentUser(user) {
+      const fecha = moment(user.fecha).format('YYYY-MM-DD');
+      const userEdit = {
+        ...user,
+        fecha
+      }
+      this.editUser(userEdit)
     }
   },
 }
@@ -93,7 +96,7 @@ export default {
 <style lang="scss" scoped>
 @import "../styles/styles";
 
-.main-crud{
+.main-crud {
   .title {
     background-color: $dark-gray;
     display: flex;

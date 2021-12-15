@@ -12,13 +12,14 @@
               icon
               v-bind="attrs"
               v-on="on"
+              @click="edit && $emit('editar-usuario')"
           >
-            <v-icon>mdi-plus-thick</v-icon>
+            <v-icon>{{ icon }}</v-icon>
           </v-btn>
         </template>
         <template v-slot:default="dialog">
           <v-card class="pa-5">
-            <RegisterForm @create-user="createUser($event)"/>
+            <RegisterForm :edit="edit"  @create-user="createUser($event)"/>
             <v-card-actions class="justify-end">
               <v-btn
                   text
@@ -39,7 +40,6 @@
 <script>
 import RegisterForm from "@/components/login/RegisterForm";
 import moment from "moment";
-import snackbar from "@/components/ui/snackbar";
 import {mapActions, mapState} from "vuex";
 
 export default {
@@ -56,6 +56,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    icon: {
+      type: String,
+      default: 'mdi-plus-thick'
+    },
+    edit: {
+      type: Boolean,
+      default: false
+    }
   },
 
 

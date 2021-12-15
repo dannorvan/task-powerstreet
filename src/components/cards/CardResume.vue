@@ -7,7 +7,7 @@
         <v-img
             height="150"
             :aspect-ratio="1"
-            :src="product.img"
+            src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
         ></v-img>
       </v-col>
       <v-col cols="12" md="6">

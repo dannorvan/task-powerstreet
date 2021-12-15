@@ -20,30 +20,32 @@
         <v-col cols="12" md="4" >
           <div class="cont-resumen pa-3" >
             <h2>RESUMEN</h2>
-            <div>
+            <div class="cont">
               <h5>Precio ({{numArticles}} ITEMS)</h5>
               <h4>${{ subtotal.toFixed(2) }}</h4>
             </div>
             <hr>
-            <div>
+            <div class="cont">
               <h5>Gasto de envío</h5>
               <h4>$200.00</h4>
             </div>
-            <div>
+            <div class="cont">
               <h5>Total</h5>
               <h4><b>${{ (subtotal+200).toFixed(2)}}</b></h4>
             </div>
-            <div>
+            <div class="cont mt-5">
               <v-btn
                   class="ma-1"
                   color="gray"
                   outlined
                   link
+                  x-small
                   :to="{name: 'MainPage'}"
               >
                 <h4>SEGUIR COMPRANDO</h4>
               </v-btn>
               <v-btn
+                  x-small
                   class="ma-1 white--text"
                   color="black"
                   @click="finishingShopping"
@@ -144,6 +146,11 @@ export default {
 
   .cont-resumen{
     background-color: white;
+  }
+
+  .cont{
+    display: flex;
+    justify-content: space-between;
   }
 }
 

@@ -59,6 +59,7 @@
     ></v-text-field>
 
     <v-btn
+        v-if="!edit"
         :disabled="isLoading"
         color="black"
         class="mr-4 mb-5 white--text"
@@ -68,12 +69,23 @@
     >
       Crear
     </v-btn>
+    <v-btn
+        v-else
+        :disabled="isLoading"
+        color="black"
+        class="mr-4 mb-5 white--text"
+        type="submit"
+        block
+        @click="editCurrentUser"
+    >
+      Edit User
+    </v-btn>
 
   </v-form>
 </template>
 
 <script>
-import {mapState} from "vuex";
+import {mapActions, mapState} from "vuex";
 
 export default {
   name: "registerForm",
@@ -87,6 +99,11 @@ export default {
     isLoading: {
       type: Boolean,
       default: false
+    },
+
+    edit:{
+      type: Boolean,
+      default: false,
     }
   },
 
@@ -95,7 +112,9 @@ export default {
     ...mapState('crudUsers', ['currentUser'])
   },
 
-
+  methods: {
+    ...mapActions('crudUsers', ['editCurrentUser'])
+  },
 }
 </script>
 

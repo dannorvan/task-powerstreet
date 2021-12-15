@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import {fetchApiLogin, loaderLoading, URL_BACK_API} from "@/helpers";
 import Swal from "sweetalert2";
+import moment from "moment";
 
 Vue.use(Vuex)
 
@@ -42,7 +43,15 @@ export default{
             console.log(state.dialog);
             state.dialog = true;
             state.currentUser = user;
+        },
+
+        updateCurrentUser(state){
+            console.log(state.currentUser);
+            console.log(state.users);
+            state.users.map(user => user._id === state.currentUser._id
+            ? state.currentUser : user );
         }
+
 
     },
 
@@ -123,8 +132,34 @@ export default{
             }
         },
 
-        async editCurrentUser({commit}, user){
-            console.log(user)
+        async editCurrentUser({commit, state}){
+            const userEdit = {...state.currentUser};
+            console.log(userEdit)
+            const fecha = moment(userEdit.fecha).format('DD/MM/YYYY');
+            const user = {
+                ...userEdit,
+                fecha
+            }
+
+            try {
+                loaderLoading.show();
+                const resp = await fetchApiLogin('editar_usuario', user)
+                    .then(async (resp) => {
+                        const data = await resp.json();
+                        console.log(data)
+                        if(data.error){
+                            Swal.fire('Oops!', data.error, 'warning');
+                        } else {
+                            Swal.fire('Excelente!', data.res, 'success');
+                            commit('updateCurrentUser');
+                        }
+                    })
+            } catch (e) {
+                console.error(e);
+            } finally {
+                loaderLoading.hide();
+            }
+
         }
     }
 }

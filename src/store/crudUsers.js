@@ -30,7 +30,6 @@ export default{
 
         addUser(state, user){
             state.users = [user,...state.users];
-            console.log(state.users);
             state.dialog = false;
         },
 
@@ -39,15 +38,11 @@ export default{
         },
 
         editUser(state, user){
-            console.log(user)
-            console.log(state.dialog);
             state.dialog = true;
             state.currentUser = user;
         },
 
         updateCurrentUser(state){
-            console.log(state.currentUser);
-            console.log(state.users);
             state.users.map(user => user._id === state.currentUser._id
             ? state.currentUser : user );
         }
@@ -112,7 +107,6 @@ export default{
         },
 
         async deleteUser({commit}, user){
-            console.log(user);
             try {
                 loaderLoading.show();
                 const resp = await fetchApiLogin('eliminar_usuario', {usuario: user.id})
@@ -134,7 +128,6 @@ export default{
 
         async editCurrentUser({commit, state}){
             const userEdit = {...state.currentUser};
-            console.log(userEdit)
             const fecha = moment(userEdit.fecha).format('DD/MM/YYYY');
             const user = {
                 ...userEdit,
@@ -146,7 +139,6 @@ export default{
                 const resp = await fetchApiLogin('editar_usuario', user)
                     .then(async (resp) => {
                         const data = await resp.json();
-                        console.log(data)
                         if(data.error){
                             Swal.fire('Oops!', data.error, 'warning');
                         } else {

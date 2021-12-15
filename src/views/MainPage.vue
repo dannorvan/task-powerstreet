@@ -225,7 +225,6 @@ export default {
   async mounted() {
     await this.getProductsVx();
     this.listProducts = this.productList;
-    console.log(this.listProducts);
   },
 
   methods: {
@@ -255,7 +254,7 @@ export default {
           this.filterProduct = '';
         }
       } catch (e) {
-        console.e(e);
+        console.error(e);
       } finally {
         loaderLoading.hide();
       }

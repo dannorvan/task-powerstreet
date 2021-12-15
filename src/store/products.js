@@ -49,7 +49,6 @@ export default{
             } else {
                 state.productsInCar.push(productModify);
                 localStorage.setItem('carrito', JSON.stringify(state.productsInCar));
-                console.log(state.productsInCar);
             }
         },
 
@@ -58,7 +57,6 @@ export default{
                 ? prod.favorito = !prod.favorito : prod);
 
             state.productsFavorites = state.productList.filter(prod => prod.favorito);
-            console.log(state.productsFavorites);
 
             localStorage.setItem('favorites', JSON.stringify(state.productsFavorites));
         },
@@ -76,13 +74,6 @@ export default{
             localStorage.setItem('carrito', JSON.stringify(state.productsInCar));
         },
 
-        finishShopping(state){
-            console.log('ajua')
-            // state.productsSearched = [];
-            // state.productList = [];
-            // state.productsInCar = [];
-            // localStorage.removeItem('carrito');
-        }
     },
 
     actions: {
@@ -126,7 +117,6 @@ export default{
                 body: JSON.stringify({...body}),
             }).then(async data => {
                 const { datos , error } = await data.json();
-                console.log(datos, error);
                 if(error){
                     return error;
                 }

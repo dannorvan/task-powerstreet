@@ -43,7 +43,6 @@ export default {
       }
 
       //TODO. peticion editar
-      console.log(editUser);
       //
       // if(!this.fieldValid(user)) return;
       //

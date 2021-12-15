@@ -99,7 +99,6 @@ export default {
   },
 
   methods: {
-    ...mapMutations('products', ['finishShopping']),
 
      finishingShopping(){
 
@@ -109,7 +108,6 @@ export default {
         this.textSnack = 'Gracias por comprar con nosotros!'
 
         setTimeout(() => {
-          this.finishShopping();
           this.$router.push({name: 'MainPage'});
         },2000)
       } catch (e) {

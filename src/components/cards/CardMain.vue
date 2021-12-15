@@ -30,24 +30,55 @@
 
     <v-divider class="mx-4"></v-divider>
 
-      <v-card-actions >
-        <v-btn
-            class="ma-2"
-            color="black"
-            outlined
-            @click="$emit('add-to-car')"
-        >
-          Agregar
-        </v-btn>
-      </v-card-actions>
+    <v-row>
+      <v-col cols="6">
+        <v-card-actions >
+          <v-btn
+              class="ma-2"
+              color="black"
+              outlined
+              @click="$emit('add-to-car')"
+          >
+            Agregar
+          </v-btn>
+
+          <v-btn
+              icon
+              color="pink"
+              @click="$emit('add-to-favorite')"
+          >
+            <v-icon>{{ favorite ? 'mdi-heart' : 'mdi-heart-outline' }}</v-icon>
+          </v-btn>
+        </v-card-actions>
+      </v-col>
+      <v-col cols="6">
+        <div class="cont-dialog">
+          <DialogProduct
+              :dialog.sync="dialog"
+              :img="img"
+              :name-product="nameProduct"
+              :price="price"
+              :description="description"
+              :favorite="favorite"
+          >
+          </DialogProduct>
+        </div>
+      </v-col>
+    </v-row>
+
+
+
+
+
   </v-card>
 </template>
 
 <script>
 
+import DialogProduct from "@/components/dialogs/DialogProduct";
 export default {
   name: "CardMain",
-
+  components: {DialogProduct},
   props: {
     img: {
       type: String,
@@ -65,6 +96,14 @@ export default {
       type: String,
       default: 'Descripción'
     },
+    favorite: {
+      type: Boolean,
+      default: false
+    },
+    dialog:{
+      type: Boolean,
+      default: false
+    },
 
   },
 }
@@ -77,6 +116,13 @@ export default {
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.cont-dialog{
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 </style>

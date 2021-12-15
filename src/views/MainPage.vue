@@ -77,7 +77,12 @@
                 :name-product="product.nombre_producto"
                 :price="product.precio"
                 :description="product.descripcion"
+                :favorite="product.favorito"
+                :dialog="dialog"
                 @add-to-car="addProductsCarVx(product)"
+                @add-to-favorite="toggleProductFavorites(product)"
+                @toggle-dialog="dialog = !dialog"
+                @close-dialog-child="dialog = !dialog"
             />
           </v-col>
         </v-row>
@@ -88,11 +93,13 @@
               cols="12" sm="6" md="4" lg="4"
               v-for="product in productsSearched"
           >
+
             <CardMain
                 :key="product.codigo_producto"
                 :name-product="product.nombre_producto"
                 :price="product.precio"
                 :description="product.descripcion"
+                :favorite="product.favorito"
                 @add-to-car="addProductsCar(product)"
             />
           </v-col>
@@ -110,6 +117,7 @@
                 :name-product="product.nombre_producto"
                 :price="product.precio"
                 :description="product.descripcion"
+                :favorite="product.favorito"
                 @add-to-car="addProductsCar(product)"
             />
           </v-col>
@@ -154,11 +162,13 @@
         fab
         dark
         color="teal darken-4"
+        link
+        :to="{name: 'Orders'}"
     >
       <v-icon dark>
         mdi-cart-outline
       </v-icon>
-      <small>{{productsInCar.length}}</small>
+      <small>{{numArticles}}</small>
 
     </v-btn>
 
@@ -169,15 +179,17 @@
 
 <script>
 import CardMain from "@/components/cards/CardMain";
-import {mapMutations, mapState, mapActions} from "vuex";
+import {mapMutations, mapState, mapActions, mapGetters} from "vuex";
 import {loaderLoading, URL_BACK_API} from "@/helpers";
 import snackbar from "@/components/ui/snackbar";
 import 'animate.css';
+import DialogProduct from "@/components/dialogs/DialogProduct";
 
 export default {
   name: "MainPage",
 
   components: {
+    DialogProduct,
     CardMain,
     snackbar
   },
@@ -196,16 +208,18 @@ export default {
       prevPage: [],
       paginationNumber: 6,
       snackbar: false,
-      textSnack: ''
+      textSnack: '',
+      dialog: false
     }
   },
   beforeRouteLeave(to,from,next){
-    this.resetValues();
+    this.resetValues(false);
     next();
   },
 
   computed: {
     ...mapState('products', ['productList', 'productsSearched', 'productsInCar']),
+    ...mapGetters('products', ['numArticles']),
   },
 
   async mounted() {
@@ -216,11 +230,13 @@ export default {
 
   methods: {
     ...mapActions('products', ['getProducts', 'findProduct']),
-    ...mapMutations('products', ['cleanProductSearched', 'addProductsCar', 'resetValues']),
+    ...mapMutations('products',
+        ['cleanProductSearched', 'addProductsCar', 'resetValues', 'toggleProductFavorites']),
 
     cleanSearching() {
       this.cleanProductSearched();
       this.isSearching = !this.isSearching;
+      this.listProductsCurrent = [];
       this.filterProduct = '';
       this.showChipProduct = false;
       this.showFilter = false;

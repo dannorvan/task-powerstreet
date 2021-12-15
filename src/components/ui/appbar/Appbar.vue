@@ -67,11 +67,15 @@ export default {
 
   methods: {
     ...mapMutations('login', ['logout', 'getUser']),
+    ...mapMutations('products', ['resetValues']),
 
     logoutSession(){
       this.logout();
       this.$router.push({path: '/'})
       localStorage.removeItem('user');
+      localStorage.removeItem('carrito');
+      localStorage.removeItem('favorite');
+      this.resetValues(true);
       this.drawer = false;
     },
   },

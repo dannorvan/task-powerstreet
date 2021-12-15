@@ -10,7 +10,8 @@ export default{
     state: {
         productList: [],
         productsSearched: [],
-        productsInCar: []
+        productsFavorites: JSON.parse(localStorage.getItem('favorites')) || [],
+        productsInCar: JSON.parse(localStorage.getItem('carrito')) || [],
     },
 
     mutations: {
@@ -27,15 +28,52 @@ export default{
             state.productsSearched = [];
         },
 
-        resetValues(state){
+        resetValues(state, logout){
             state.productsSearched = [];
             state.productList = [];
-            state.productsInCar = [];
+            if(logout){
+                state.productsInCar = [];
+                state.productsFavorites = [];
+            }
         },
 
         addProductsCar(state,product){
-            state.productsInCar.push(product);
-            console.log(state.productsInCar);
+            const productModify = {
+                ...product,
+                cantidad: 1,
+            }
+
+            if(state.productsInCar.some(prod => prod.codigo_producto === productModify.codigo_producto)){
+                state.productsInCar.map(prod => prod.codigo_producto === productModify.codigo_producto
+                    ? prod.cantidad++ : prod)
+            } else {
+                state.productsInCar.push(productModify);
+                localStorage.setItem('carrito', JSON.stringify(state.productsInCar));
+                console.log(state.productsInCar);
+            }
+        },
+
+        toggleProductFavorites(state, product){
+            state.productList.map(prod => prod.codigo_producto === product.codigo_producto
+                ? prod.favorito = !prod.favorito : prod);
+
+            state.productsFavorites = state.productList.filter(prod => prod.favorito);
+            console.log(state.productsFavorites);
+
+            localStorage.setItem('favorites', JSON.stringify(state.productsFavorites));
+        },
+
+        editProductsCars(state, {product, operation}){
+            state.productsInCar.map(prod => prod.codigo_producto === product.codigo_producto
+                ? operation === 'suma' ? prod.cantidad++ : prod.cantidad-- : prod);
+            localStorage.setItem('carrito', JSON.stringify(state.productsInCar));
+
+        },
+
+
+        removeProductsCars(state, id){
+            state.productsInCar = state.productsInCar.filter(prod => prod.codigo_producto !== id);
+            localStorage.setItem('carrito', JSON.stringify(state.productsInCar));
         }
     },
 
@@ -89,5 +127,10 @@ export default{
                 }
             })
         }
+    },
+
+    getters: {
+      numArticles: state => state.productsInCar.reduce((prev, {cantidad}) => prev + cantidad, 0),
+        subtotal: state => state.productsInCar.reduce((prev, {precio,cantidad}) => prev + (precio*cantidad), 0),
     }
 }

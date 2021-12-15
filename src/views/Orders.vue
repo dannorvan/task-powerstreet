@@ -38,12 +38,15 @@
                   class="ma-1"
                   color="gray"
                   outlined
+                  link
+                  :to="{name: 'MainPage'}"
               >
                 <h4>SEGUIR COMPRANDO</h4>
               </v-btn>
               <v-btn
                   class="ma-1 white--text"
                   color="black"
+                  @click="finishingShopping"
               >
                 <h4>REALIZAR PEDIDO</h4>
               </v-btn>
@@ -65,22 +68,55 @@
 
       </v-container>
     </v-container>
+    <snackbar @close-snack="snackbar = false" :snackbar="snackbar" :text-snack="textSnack"/>
   </div>
 
 </template>
 
 <script>
 import CardResume from "@/components/cards/CardResume";
-import {mapGetters, mapState} from "vuex";
+import {mapGetters, mapMutations, mapState} from "vuex";
+import {loaderLoading} from "@/helpers";
+import Snackbar from "@/components/ui/snackbar";
 
 
 export default {
   name: "Orders",
-  components: {CardResume},
+  data() {
+    return {
+      snackbar: false,
+      textSnack: ''
+    }
+  },
+
+  components: {Snackbar, CardResume},
 
   computed: {
     ...mapState('products', ['productsInCar']),
     ...mapGetters('products', ['numArticles', 'subtotal']),
+  },
+
+  methods: {
+    ...mapMutations('products', ['finishShopping']),
+
+     finishingShopping(){
+
+      try {
+        loaderLoading.show();
+        this.snackbar = true;
+        this.textSnack = 'Gracias por comprar con nosotros!'
+
+        setTimeout(() => {
+          this.finishShopping();
+          this.$router.push({name: 'MainPage'});
+        },2000)
+      } catch (e) {
+        console.error()
+      } finally {
+        loaderLoading.hide();
+      }
+
+    }
   },
 }
 </script>

@@ -81,7 +81,7 @@ export default {
           this.snackbar = true;
           this.textSnack = data.error;
         } else {
-          localStorage.setItem('user', JSON.stringify({user: this.user.usuario, isLogged: true}));
+          localStorage.setItem('user', JSON.stringify({usuario: this.user.usuario, isLogged: true}));
           this.login(this.user);
           this.$router.push({name: 'MainPage'});
         }

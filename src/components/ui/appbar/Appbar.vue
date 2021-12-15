@@ -23,9 +23,13 @@
           <v-icon color="grey darken-1" size="26">{{ icon }}</v-icon>
         </v-btn>
 
-        <v-btn @click="logoutSession" icon>
-          <v-icon color="grey darken-1" size="25">mdi-logout</v-icon>
-        </v-btn>
+        <div class="cont-user-logout">
+          <span>{{user.usuario}}</span>
+          <v-btn @click="logoutSession" icon>
+            <v-icon color="grey lighten-1" size="25">mdi-logout</v-icon>
+          </v-btn>
+        </div>
+
       </template>
 
     </v-app-bar>
@@ -87,6 +91,12 @@ export default {
 
 .cont-search{
   margin-top: 60px;
+}
+
+.cont-user-logout{
+  background-color: black;
+  border-radius: 4px;
+  padding: 0 5px;
 }
 
 </style>

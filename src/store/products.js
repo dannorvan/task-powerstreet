@@ -74,6 +74,14 @@ export default{
         removeProductsCars(state, id){
             state.productsInCar = state.productsInCar.filter(prod => prod.codigo_producto !== id);
             localStorage.setItem('carrito', JSON.stringify(state.productsInCar));
+        },
+
+        finishShopping(state){
+            console.log('ajua')
+            // state.productsSearched = [];
+            // state.productList = [];
+            // state.productsInCar = [];
+            // localStorage.removeItem('carrito');
         }
     },
 

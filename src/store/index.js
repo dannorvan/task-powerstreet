@@ -1,6 +1,7 @@
 
 import login from './login';
 import products from './products';
+import crudUsers from "./crudUsers";
 
 import Vue from 'vue'
 import Vuex from 'vuex'
@@ -17,6 +18,7 @@ export default new Vuex.Store({
   },
   modules: {
     login,
-    products
+    products,
+    crudUsers
   }
 })

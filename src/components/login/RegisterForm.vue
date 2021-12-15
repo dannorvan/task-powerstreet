@@ -1,24 +1,24 @@
 <template>
   <v-form
-      @submit.prevent="$emit('register-user', newUser)"
+      @submit.prevent="$emit('register-user', currentUser)"
   >
 
     <v-text-field
-        v-model="newUser.nombre"
+        v-model="currentUser.nombre"
         label="Nombre completo"
         required
         color="cyan darken-4"
     ></v-text-field>
 
     <v-text-field
-        v-model="newUser.usuario"
+        v-model="currentUser.usuario"
         label="Usuario"
         required
         color="cyan darken-4"
     ></v-text-field>
 
     <v-text-field
-        v-model="newUser.email"
+        v-model="currentUser.email"
         label="Email"
         required
         color="cyan darken-4"
@@ -27,7 +27,7 @@
 
     <small>Fecha de nacimiento:</small>
     <v-date-picker
-        v-model="newUser.fecha"
+        v-model="currentUser.fecha"
         class="mt-3 mb-5"
         min="1950-06-15"
         max="2003-03-20"
@@ -35,7 +35,7 @@
     ></v-date-picker>
 
       <v-text-field
-          v-model="newUser.telefono"
+          v-model="currentUser.telefono"
           :counter="10"
           maxlength="10"
           label="Phone Number"
@@ -43,7 +43,7 @@
       ></v-text-field>
 
     <v-text-field
-        v-model="newUser.contrasenia"
+        v-model="currentUser.contrasenia"
         label="Contraseña"
         type="password"
         required
@@ -51,7 +51,7 @@
     ></v-text-field>
 
     <v-text-field
-        v-model="newUser.contrasenia2"
+        v-model="currentUser.contrasenia2"
         label="Confirmar Contraseña"
         type="password"
         required
@@ -64,30 +64,19 @@
         class="mr-4 mb-5 white--text"
         type="submit"
         block
+        @click="$emit('create-user', currentUser)"
     >
-      Registrarse
+      Crear
     </v-btn>
 
   </v-form>
 </template>
 
 <script>
+import {mapState} from "vuex";
+
 export default {
   name: "registerForm",
-
-  data() {
-    return {
-      newUser: {
-        nombre: "Pablo Rincón",
-        usuario: "prueba",
-        fecha: '2000-03-20',
-        contrasenia: "pwst1234",
-        contrasenia2: 'pwst1234',
-        telefono: '1234567890',
-        email: "PWST@powerstreet.com.mx"
-      }
-    }
-  },
 
   props: {
     showRegister: {
@@ -100,6 +89,12 @@ export default {
       default: false
     }
   },
+
+
+  computed: {
+    ...mapState('crudUsers', ['currentUser'])
+  },
+
 
 }
 </script>
